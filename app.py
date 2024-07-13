@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -77,5 +77,53 @@ def download_image():
     
     return send_file(filename, as_attachment=True)
 
+# Endpoint para obter link de vídeo
+@app.route('/api/vid2', methods=['GET'])
+def get_video_link():
+    url = request.args.get('url')
+    if not url or ("pinterest.com/pin/" not in url and "https://pin.it/" not in url):
+        return jsonify({"error": "Invalid URL"}), 400
+
+    if "https://pin.it/" in url:
+        t_body = requests.get(url)
+        if t_body.status_code != 200:
+            return jsonify({"error": "URL not working"}), 400
+        soup = BeautifulSoup(t_body.content, "html.parser")
+        href_link = soup.find("link", rel="alternate")['href']
+        match = re.search('url=(.*?)&', href_link)
+        url = match.group(1)
+
+    body = requests.get(url)
+    if body.status_code != 200:
+        return jsonify({"error": "URL not working"}), 400
+
+    soup = BeautifulSoup(body.content, "html.parser")
+    extract_url = soup.find("video", class_="hwa kVc MIw L4E")['src']
+    convert_url = extract_url.replace("hls", "720p").replace("m3u8", "mp4")
+    
+    return jsonify({"video_url": convert_url})
+
+# Endpoint para obter link de imagem
+@app.route('/api/img2', methods=['GET'])
+def get_image_link():
+    url = request.args.get('url')
+    if not url or ("pinterest.com/pin/" not in url and "https://pin.it/" not in url):
+        return jsonify({"error": "Invalid URL"}), 400
+
+    t_body = requests.get(url)
+    if t_body.status_code != 200:
+        return jsonify({"error": "URL not working"}), 400
+
+    soup = BeautifulSoup(t_body.content, "html.parser")
+    img_tag = soup.find("img")
+    if img_tag is None:
+        return jsonify({"error": "No image found"}), 404
+
+    img_url = img_tag['src']
+    if not img_url.startswith(('http:', 'https:')):
+        img_url = f"https:{img_url}"
+
+    return jsonify({"image_url": img_url})
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
