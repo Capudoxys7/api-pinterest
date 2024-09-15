@@ -8,64 +8,51 @@ import re
 
 app = Flask(__name__)
 
-# Função para pesquisar vídeos no YouTube
+# Função para buscar o vídeo no YouTube usando cookies
 def search_video(query):
-    ydl_opts = {'quiet': True}
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        try:
-            search_result = ydl.extract_info(f"ytsearch:{query}", download=False)['entries'][0]
-            return search_result['webpage_url']
-        except Exception as e:
-            print(f"Error searching video: {e}")
-            return None
-
-# Função para baixar vídeos do YouTube
-def download_video(url, format):
     ydl_opts = {
-        'format': 'bestaudio/best' if format == 'mp3' else 'bestvideo+bestaudio',
-        'outtmpl': f'%(id)s.%(ext)s',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }] if format == 'mp3' else []
+        'quiet': True,
+        'format': 'bestaudio/best',
+        'noplaylist': True,
+        'extract-audio': True,
+        'audio-format': 'mp3',
+        'http_headers': {
+            'Cookie': ('VISITOR_PRIVACY_METADATA=CgJCUhIEGgAgJg%3D%3D; __Secure-3PSID=g.a000oAh8TI1n49_Ux3Xu-EC6OlkxjHAXM6x5miSzqwNrlPyElpQL1FzkiQamrdp6Ao-S4wi-jgACgYKAXYSARMSFQHGX2Mi3-ioeMxM6g-eQB45iH09uBoVAUF8yKqEOkk5-7xuugUSgqtZkEQy0076; '
+                        'GPS=1; SIDCC=AKEyXzV9rY--p45z6CSNtvGiWYgRv1tmZ0xk5ku9LAwLTk6TIg92JaoPgBTKpof4UyKRI10h; YSC=NKJ1_jqNy2s; '
+                        'SID=g.a000oAh8TI1n49_Ux3Xu-EC6OlkxjHAXM6x5miSzqwNrlPyElpQLu-qY3QLRBJ1B02NyeCU05QACgYKAdoSARMSFQHGX2MisxQByu83nxiI8L2rUKX-XBoVAUF8yKpTvReDAG2bpSfUoB3oSW0c0076; '
+                        '__Secure-1PSIDTS=sidts-CjEBUFGoh1apV30CyRjKLmKqhixkwGFzC3kI1xjJsPqV06kkxxxuilXeUtnJlWUzZ3_GEAA; '
+                        'SAPISID=4CNo5uWwFSZG9b0G/AXzPiQ2L6a2WeVeML; __Secure-1PSIDCC=AKEyXzUympzdridXk38ln7MzIm4DTGYzCRRS3_yY_ZH3yHIZYaI7SbIEzXrE4_5YyinUPpKYnw; SSID=A1_LFRCq0n5oSEBBr; '
+                        '__Secure-1PAPISID=4CNo5uWwFSZG9b0G/AXzPiQ2L6a2WeVeML; __Secure-1PSID=g.a000oAh8TI1n49_Ux3Xu-EC6OlkxjHAXM6x5miSzqwNrlPyElpQLF9lbH0035uB1EzYg0VfPHgACgYKAUcSARMSFQHGX2Mi2g4ovCqvp54IpDQMSqD9BRoVAUF8yKp20lbQ6HdFnWbqIeyeKMOe0076; '
+                        '__Secure-3PAPISID=4CNo5uWwFSZG9b0G/AXzPiQ2L6a2WeVeML; __Secure-3PSIDCC=AKEyXzUgMP9ByGOSkkpHRFGBaXfHtRTS7_liqfcOXj1pr6ch5kPWlxANCGFhAQ6qc2fLWkK5; '
+                        '__Secure-3PSIDTS=sidts-CjEBUFGoh1apV30CyRjKLmKqhixkwGFzC3kI1xjJsPqV06kkxxxuilXeUtnJlWUzZ3_GEAA; '
+                        'APISID=DiI70Ovr8Yrz6M30/AxM5EK3i_UXqOsJnU; HSID=A4TGwqBZkE8cI4gFU; '
+                        'LOGIN_INFO=AFmmF2swRQIgPGo0mCrlgbAjl1o2BRkL9g19Jzeb_pDpe9qPR7Mx2iUCIQCa8uLKzWF4S0SfQRmEOWSLnvJ2ESqlAMDcJGhAWsYMjw:QUQ3MjNmeVczS1RVb19UQUhxZzBHbnhEWUVyQ204TGVySldjSHdveWJEdmhIeGVUOGdjLW1YSGJqOG5oNDJDOFN1VXBUVEpVQmxmX0FDaUtITjVkMGdEbXVTbDNXX2ZMbGNNb1R6dHVZTm44azFXU2RqR3RhemtqOHJPZTNoamJTR25vdmtLaTROenRQNG5seHlPRW1kNk8tUXdZV1VjQndB; '
+                        'PREF=f6=40000000&tz=America.Fortaleza; VISITOR_INFO1_LIVE=p-s6PkkBDJQ')
+        }
     }
-    try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(url, download=True)
-            print(f"Downloaded info dict: {info_dict}")
-            filename = ydl.prepare_filename(info_dict)
-            if format == 'mp3':
-                filename = filename.rsplit('.', 1)[0] + '.mp3'
-            print(f"Final filename: {filename}")
-            return filename
-    except Exception as e:
-        print(f"Error downloading video: {e}")
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        result = ydl.extract_info(f"ytsearch:{query}", download=False)
+        if result:
+            return result['entries'][0]
         return None
 
-# Função para baixar arquivos
-def download_file(url, filename):
-    response = requests.get(url, stream=True)
-    with open(filename, 'wb') as f:
-        for chunk in response.iter_content(1024):
-            f.write(chunk)
+# Rota para converter vídeo do YouTube em MP3
+@app.route('/api/yt/mp3', methods=['GET'])
+def get_mp3():
+    query = request.args.get('name')
+    if not query:
+        return jsonify({'error': 'Query não fornecida'}), 400
 
-# Endpoint para baixar vídeos do YouTube
-@app.route('/api/yt/<format>', methods=['GET'])
-def download(format):
-    if format not in ['mp3', 'mp4']:
-        return jsonify({"error": "Invalid format. Use 'mp3' or 'mp4'."}), 400
-
-    name = request.args.get('name')
-    url = request.args.get('url')
-
-    if not name and not url:
-        return jsonify({"error": "Missing 'name' or 'url' parameter."}), 400
-
-    if name:
-        url = search_video(name)
-        if not url:
-            return jsonify({"error": "Video not found."}), 404
+    video_info = search_video(query)
+    if video_info:
+        return jsonify({
+            'title': video_info['title'],
+            'webpage_url': video_info['webpage_url'],
+            'duration': video_info['duration']
+        })
+    else:
+        return jsonify({'error': 'Vídeo não encontrado'}), 404
 
     filename = download_video(url, format)
     if not filename or not os.path.exists(filename):
