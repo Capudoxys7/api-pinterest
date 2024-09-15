@@ -1,59 +1,22 @@
 from flask import Flask, request, jsonify, send_file
-import yt_dlp
-import os
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 import re
+import os
 
 app = Flask(__name__)
 
-# Função para buscar o vídeo no YouTube usando cookies
-def search_video(query):
-    ydl_opts = {
-    'quiet': True,
-    'format': 'bestaudio/best',
-    'noplaylist': True,
-    'extract-audio': True,
-    'audio-format': 'mp3',
-    'cookiefile': 'cookies.txt'  # Arquivo de cookies no formato Netscape
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        result = ydl.extract_info(f"ytsearch:{query}", download=False)
-        if result:
-            return result['entries'][0]
-        return None
+# Função para baixar arquivos
+def download_file(url, filename):
+    response = requests.get(url, stream=True)
+    with open(filename, 'wb') as f:
+        for chunk in response.iter_content(1024):
+            f.write(chunk)
 
-# Rota para converter vídeo do YouTube em MP3
-@app.route('/api/yt/mp3', methods=['GET'])
-def get_mp3():
-    query = request.args.get('name')
-    if not query:
-        return jsonify({'error': 'Query não fornecida'}), 400
-
-    video_info = search_video(query)
-    if video_info:
-        return jsonify({
-            'title': video_info['title'],
-            'webpage_url': video_info['webpage_url'],
-            'duration': video_info['duration']
-        })
-    else:
-        return jsonify({'error': 'Vídeo não encontrado'}), 404
-
-    filename = download_video(url, format)
-    if not filename or not os.path.exists(filename):
-        return jsonify({"error": "Failed to download video."}), 500
-
-    try:
-        return send_file(filename, as_attachment=True)
-    finally:
-        if filename and os.path.exists(filename):
-            os.remove(filename)
-
-# Endpoint para baixar vídeos diretamente de links do Pinterest
+# Endpoint para baixar e retornar vídeo diretamente
 @app.route('/api/vid', methods=['GET'])
-def download_pinterest_video():
+def download_video():
     url = request.args.get('url')
     if not url or ("pinterest.com/pin/" not in url and "https://pin.it/" not in url):
         return jsonify({"error": "Invalid URL"}), 400
@@ -80,9 +43,9 @@ def download_pinterest_video():
     
     return send_file(filename, as_attachment=True)
 
-# Endpoint para baixar imagens diretamente de links do Pinterest
+# Endpoint para baixar e retornar imagem diretamente
 @app.route('/api/img', methods=['GET'])
-def download_pinterest_image():
+def download_image():
     url = request.args.get('url')
     if not url or ("pinterest.com/pin/" not in url and "https://pin.it/" not in url):
         return jsonify({"error": "Invalid URL"}), 400
@@ -105,9 +68,9 @@ def download_pinterest_image():
     
     return send_file(filename, as_attachment=True)
 
-# Endpoint para obter link direto de vídeo do Pinterest
+# Endpoint para obter link direto do vídeo
 @app.route('/api/vid2', methods=['GET'])
-def get_pinterest_video_link():
+def get_video_link():
     url = request.args.get('url')
     if not url or ("pinterest.com/pin/" not in url and "https://pin.it/" not in url):
         return jsonify({"error": "Invalid URL"}), 400
@@ -131,9 +94,9 @@ def get_pinterest_video_link():
     
     return jsonify({"video_url": convert_url})
 
-# Endpoint para obter link direto de imagem do Pinterest
+# Endpoint para obter link direto da imagem
 @app.route('/api/img2', methods=['GET'])
-def get_pinterest_image_link():
+def get_image_link():
     url = request.args.get('url')
     if not url or ("pinterest.com/pin/" not in url and "https://pin.it/" not in url):
         return jsonify({"error": "Invalid URL"}), 400
@@ -154,5 +117,4 @@ def get_pinterest_image_link():
     return jsonify({"image_url": img_url})
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
