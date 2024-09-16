@@ -100,12 +100,6 @@ def get_mp3_info():
             return jsonify(response)
         else:
             return jsonify({'error': 'Falha ao baixar ou encontrar o vídeo'}), 500
-# Função para baixar arquivos
-def download_file(url, filename):
-    response = requests.get(url, stream=True)
-    with open(filename, 'wb') as f:
-        for chunk in response.iter_content(1024):
-            f.write(chunk)
 
 # Endpoint para baixar e retornar vídeo diretamente
 @app.route('/api/vid', methods=['GET'])
