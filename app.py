@@ -5,7 +5,8 @@ from datetime import datetime
 import re
 import os
 import yt_dlp
-
+import Response
+from pytubefix import YouTube
 app = Flask(__name__)
 # Função para buscar o vídeo no YouTube usando cookies
 def search_video(query):
@@ -203,5 +204,62 @@ def get_image_link():
 
     return jsonify({"image_url": img_url})
 
+@app.route('/play', methods=['GET'])
+def play_audio():
+    try:
+        # Obtém a URL do vídeo
+        url = request.args.get("url")
+        
+        if not url:
+            return jsonify({"error": "URL é obrigatória"}), 400
+        
+        yt = YouTube(url)
+        
+        # Seleciona apenas o áudio
+        stream = yt.streams.filter(only_audio=True).first()
+        caminho = stream.download(filename="temp_audio.mp3")  # Baixa temporariamente
+
+        # Reproduz o áudio diretamente como resposta
+        def gerar_audio():
+            with open(caminho, "rb") as audio:
+                data = audio.read(1024)
+                while data:
+                    yield data
+                    data = audio.read(1024)
+            os.remove(caminho)  # Remove o arquivo temporário depois de enviar
+
+        return Response(gerar_audio(), mimetype="audio/mpeg")
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/playvideo', methods=['GET'])
+def play_video():
+    try:
+        # Obtém a URL do vídeo
+        url = request.args.get("url")
+        
+        if not url:
+            return jsonify({"error": "URL é obrigatória"}), 400
+        
+        yt = YouTube(url)
+        
+        # Seleciona o vídeo com a maior resolução
+        stream = yt.streams.get_highest_resolution()
+        caminho = stream.download(filename="temp_video.mp4")  # Baixa temporariamente
+
+        # Reproduz o vídeo diretamente como resposta
+        def gerar_video():
+            with open(caminho, "rb") as video:
+                data = video.read(1024)
+                while data:
+                    yield data
+                    data = video.read(1024)
+            os.remove(caminho)  # Remove o arquivo temporário depois de enviar
+
+        return Response(gerar_video(), mimetype="video/mp4")
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
