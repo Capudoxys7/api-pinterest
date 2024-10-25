@@ -3,3 +3,4 @@ beautifulsoup4
 tqdm
 flask
 yt_dlp
+pytubefix
