@@ -211,41 +211,22 @@ def get_image_link():
 
     return jsonify({"image_url": img_url})
 
-@app.route('/api/yt/mp3', methods=['GET'])
-def download_mp3():
+from flask import Flask, request, jsonify, send_file
+
+
+
+@app.route('/play', methods=['GET'])
+def download_music():
     query = request.args.get('name')
     if not query:
         return jsonify({'error': 'Query não fornecida'}), 400
 
-    # Gerar um nome base para o arquivo com data e hora
-    base_filename = datetime.now().strftime('%Y%m%d_%H%M%S')
-    ydl_opts = {
-        'quiet': True,
-        'format': 'bestaudio/best',
-        'noplaylist': True,
-        'extract-audio': True,
-        'audio-format': 'mp3',
-        'outtmpl': f'{base_filename}.%(ext)s',  # Nome do arquivo com data e hora
-    }
-
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        try:
-            # Extrai e baixa o áudio
-            result = ydl.extract_info(f"ytsearch:{query}", download=True)
-            if result and 'entries' in result and len(result['entries']) > 0:
-                video_info = result['entries'][0]
-                filename = f"{base_filename}.mp3"
-                return send_file(
-                    filename,
-                    as_attachment=True,
-                    download_name=filename,
-                    mimetype="audio/mpeg"
-                )
-        except Exception as e:
-            print(f"Error downloading audio: {e}")
-            return jsonify({'error': 'Falha ao baixar o áudio'}), 500
-
-    return jsonify({'error': 'Nenhum resultado encontrado'}), 404
-
+    filename = search_video(query)
+    
+    # Se filename for None, significa que o download falhou
+    if filename is None:
+        return jsonify({'error': 'Falha ao baixar o áudio'}), 500
+    
+    return send_file(filename, as_attachment=True)
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
