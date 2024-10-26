@@ -1,11 +1,10 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, Response
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 import re
 import os
 import yt_dlp
-import Response
 from pytubefix import YouTube
 app = Flask(__name__)
 # Função para buscar o vídeo no YouTube usando cookies
