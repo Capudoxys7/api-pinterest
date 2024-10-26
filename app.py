@@ -8,22 +8,23 @@ import yt_dlp
 from pytubefix import YouTube
 app = Flask(__name__)
 # Função para buscar o vídeo no YouTube usando cookies
+# Função para buscar o vídeo no YouTube usando cookies
 def search_video(query):
     # Gerar um nome base para o arquivo com data e hora
-base_filename = datetime.now().strftime('%Y%m%d_%H%M%S')
-ydl_opts = {
-    'quiet': True,
-    'format': 'bestaudio/best',
-    'noplaylist': True,
-    'extract-audio': True,
-    'audio-format': 'mp3',
-    'outtmpl': f'{base_filename}.%(ext)s',  # Nome do arquivo com data e hora
-    'postprocessors': [{
-        'key': 'FFmpegExtractAudio',
-        'preferredcodec': 'mp3',
-        'preferredquality': '192',
-    }],
-'http_headers': {
+    base_filename = datetime.now().strftime('%Y%m%d_%H%M%S')
+    ydl_opts = {
+        'quiet': True,
+        'format': 'bestaudio/best',
+        'noplaylist': True,
+        'extract-audio': True,
+        'audio-format': 'mp3',
+        'outtmpl': f'{base_filename}.%(ext)s',  # Nome do arquivo com data e hora
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+        'http_headers': {
             'Cookie': (
                 'Tx0HzHag7kznH9g%3AQUQ3MjNmendfaFZoSjM0b1NKNXZtUW1sbkRhQTVUajJ6Q2I5RHNIRnRJZzJYSUxoTVdVbS1tVHA3c3JhZHRsMjdiN2dqQldybDMwSmk3clVNVDV1dVNrU1QweGc5NzlqRnB3eG5zZ3RvWmJvOEZaLWJKSUduU0FpRTFTSEk2VHdkeVFkbmFqUVVjNHZIX3F6bXlnYlhYTFZrRG5mbnVVQXBB; '
                 '__Secure-1PSID=g.a000pgh8TJ84cLMDzZBqDTalAQ8CAqr554JjJfBm7GCWrk2AihspiC4G-jnKTCXRVLALESOJzgACgYKAdoSARMSFQHGX2MiVaydOyPuv4YOgOdQaUm1GBoVAUF8yKpkrOptS9lgL4dAIwZF4Urv0076; '
@@ -38,7 +39,7 @@ ydl_opts = {
                 'ST-g3o9e9=session_logininfo=AFmmF2swRQIhAOPaSjZd9B1D54ockSjNurILnr_DoWyBAHCsbtTM6sOjAiAuFTLMyER65c3V-nLgE2wGiimBo6yTx0HzHag7kznH9g%3AQUQ3MjNmendfaFZoSjM0b1NKNXZtUW1sbkRhQTVUajJ6Q2I5RHNIRnRJZzJYSUxoTVdVbS1tVHA3c3JhZHRsMjdiN2dqQldybDMwSmk3clVNVDV1dVNrU1QweGc5NzlqRnB3eG5zZ3RvWmJvOEZaLWJKSUduU0FpRTFTSEk2VHdkeVFkbmFqUVVjNHZIX3F6bXlnYlhYTFZrRG5mbnVVQXBB'
             )
         },
-}
+    }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         result = ydl.extract_info(f"ytsearch:{query}", download=True)
         if result:
