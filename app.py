@@ -205,38 +205,39 @@ def get_image_link():
 
     return jsonify({"image_url": img_url})
 
-@app.route('/api/yt/play', methods=['GET'])
-def get_mp3_info():
+@app.route('/api/yt/mp3', methods=['GET'])
+def download_mp3():
     query = request.args.get('name')
     if not query:
         return jsonify({'error': 'Query não fornecida'}), 400
 
-    with yt_dlp.YoutubeDL({'quiet': True, 'format': 'bestaudio/best', 'noplaylist': True}) as ydl:
-        try:
-            # Extrai informações do vídeo sem fazer download
-            result = ydl.extract_info(f"ytsearch:{query}", download=False)
-            if result:
-                video_info = result['entries'][0]  # Pega o primeiro resultado
-                title = video_info['title']
-                upload_date = video_info.get('upload_date', 'N/A')
-                views = video_info.get('view_count', 'N/A')
-                thumbnail = video_info.get('thumbnail', 'N/A')
-                channel = video_info.get('uploader', 'N/A')
+    # Gerar um nome base para o arquivo com data e hora
+    base_filename = datetime.now().strftime('%Y%m%d_%H%M%S')
+    ydl_opts = {
+        'quiet': True,
+        'format': 'bestaudio/best',
+        'noplaylist': True,
+        'extract-audio': True,
+        'audio-format': 'mp3',
+        'outtmpl': f'{base_filename}.%(ext)s',  # Nome do arquivo com data e hora
+    }
 
-                # Cria o link de download
-                download_link = request.host_url + 'api/yt/mp3?name=' + query
-                response = {
-                    'title': title,
-                    'download_link': download_link,
-                    'upload_date': upload_date,
-                    'views': views,
-                    'thumbnail': thumbnail,
-                    'channel': channel
-                }
-                return jsonify(response)
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        try:
+            # Extrai e baixa o áudio
+            result = ydl.extract_info(f"ytsearch:{query}", download=True)
+            if result and 'entries' in result and len(result['entries']) > 0:
+                video_info = result['entries'][0]
+                filename = f"{base_filename}.mp3"
+                return send_file(
+                    filename,
+                    as_attachment=True,
+                    download_name=filename,
+                    mimetype="audio/mpeg"
+                )
         except Exception as e:
-            print(f"Error retrieving video info: {e}")
-            return jsonify({'error': 'Falha ao recuperar informações do vídeo'}), 500
+            print(f"Error downloading audio: {e}")
+            return jsonify({'error': 'Falha ao baixar o áudio'}), 500
 
     return jsonify({'error': 'Nenhum resultado encontrado'}), 404
 
