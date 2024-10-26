@@ -24,20 +24,24 @@ def search_video(query):
             'preferredquality': '192',
         }],
         'http_headers': {
-            'Cookie': ('VISITOR_PRIVACY_METADATA=CgJCUhIEGgAgJg%3D%3D; __Secure-3PSID=g.a000oAh8TI1n49_Ux3Xu-EC6OlkxjHAXM6x5miSzqwNrlPyElpQL1FzkiQamrdp6Ao-S4wi-jgACgYKAXYSARMSFQHGX2Mi3-ioeMxM6g-eQB45iH09uBoVAUF8yKqEOkk5-7xuugUSgqtZkEQy0076; '
-                        'GPS=1; SIDCC=AKEyXzV9rY--p45z6CSNtvGiWYgRv1tmZ0xk5ku9LAwLTk6TIg92JaoPgBTKpof4UyKRI10h; YSC=NKJ1_jqNy2s; '
-                        'SID=g.a000oAh8TI1n49_Ux3Xu-EC6OlkxjHAXM6x5miSzqwNrlPyElpQLu-qY3QLRBJ1B02NyeCU05QACgYKAdoSARMSFQHGX2Mi2g4ovCqvp54IpDQMSqD9BRoVAUF8yKpTvReDAG2bpSfUoB3oSW0c0076; '
-                        '__Secure-1PSIDTS=sidts-CjEBUFGoh1apV30CyRjKLmKqhixkwGFzC3kI1xjJsPqV06kkxxxuilXeUtnJlWUzZ3_GEAA; '
-                        'SAPISID=4CNo5uWwFSZG9b0G/AXzPiQ2L6a2WeVeML; __Secure-1PSIDCC=AKEyXzUympzdridXk38ln7MzIm4DTGYzCRRS3_yY_ZH3yHIZYaI7SbIEzXrE4_5YyinUPpKYnw; SSID=A1_LFRCq0n5oSEBBr; '
-                        '__Secure-1PAPISID=4CNo5uWwFSZG9b0G/AXzPiQ2L6a2WeVeML; __Secure-1PSID=g.a000oAh8TI1n49_Ux3Xu-EC6OlkxjHAXM6x5miSzqwNrlPyElpQLF9lbH0035uB1EzYg0VfPHgACgYKAUcSARMSFQHGX2Mi2g4ovCqvp54IpDQMSqD9BRoVAUF8yKp20lbQ6HdFnWbqIeyeKMOe0076; '
-                        '__Secure-3PAPISID=4CNo5uWwFSZG9b0G/AXzPiQ2L6a2WeVeML; __Secure-3PSIDCC=AKEyXzUgMP9ByGOSkkpHRFGBaXfHtRTS7_liqfcOXj1pr6ch5kPWlxANCGFhAQ6qc2fLWkK5; '
-                        '__Secure-3PSIDTS=sidts-CjEBUFGoh1apV30CyRjKLmKqhixkwGFzC3kI1xjJsPqV06kkxxxuilXeUtnJlWUzZ3_GEAA; '
-                        'APISID=DiI70Ovr8Yrz6M30/AxM5EK3i_UXqOsJnU; HSID=A4TGwqBZkE8cI4gFU; '
-                        'LOGIN_INFO=AFmmF2swRQIgPGo0mCrlgbAjl1o2BRkL9g19Jzeb_pDpe9qPR7Mx2iUCIQCa8uLKzWF4S0SfQRmEOWSLnvJ2ESqlAMDcJGhAWsYMjw:QUQ3MjNmeVczS1RVb19UQUhxZzBHbnhEWUVyQ204TGVySldjSHdveWJEdmhIeGVUOGdjLW1YSGJqOG5oNDJDOFN1VXBUVEpVQmxmX0FDaUtITjVkMGdEbXVTbDNXX2ZMbGNNb1R6; '
-                        'PREF=f6=40000000&tz=America.Fortaleza; VISITOR_INFO1_LIVE=p-s6PkkBDJQ')
+    'Cookie': ('VISITOR_PRIVACY_METADATA=CgJCUhIEGgAgJg%3D%3D; '
+               '__Secure-3PSID=g.a000oAh8TI1n49_Ux3Xu-EC6OlkxjHAXM6x5miSzqwNrlPyElpQL1FzkiQamrdp6Ao-S4wi-jgACgYKAXYSARMSFQHGX2Mi3-ioeMxM6g-eQB45iH09uBoVAUF8yKqEOkk5-7xuugUSgqtZkEQy0076; '
+               'GPS=1; SIDCC=AKEyXzV9rY--p45z6CSNtvGiWYgRv1tmZ0xk5ku9LAwLTk6TIg92JaoPgBTKpof4UyKRI10h; '
+               'YSC=NKJ1_jqNy2s; SID=g.a000oAh8TI1n49_Ux3Xu-EC6OlkxjHAXM6x5miSzqwNrlPyElpQLu-qY3QLRBJ1B02NyeCU05QACgYKAdoSARMSFQHGX2Mi2g4ovCqvp54IpDQMSqD9BRoVAUF8yKpTvReDAG2bpSfUoB3oSW0c0076; '
+               '__Secure-1PSIDTS=sidts-CjEBUFGoh1apV30CyRjKLmKqhixkwGFzC3kI1xjJsPqV06kkxxxuilXeUtnJlWUzZ3_GEAA; '
+               'SAPISID=4CNo5uWwFSZG9b0G/AXzPiQ2L6a2WeVeML; __Secure-1PSIDCC=AKEyXzUympzdridXk38ln7MzIm4DTGYzCRRS3_yY_ZH3yHIZYaI7SbIEzXrE4_5YyinUPpKYnw; '
+               'SSID=A1_LFRCq0n5oSEBBr; '
+               '__Secure-1PAPISID=4CNo5uWwFSZG9b0G/AXzPiQ2L6a2WeVeML; '
+               '__Secure-1PSID=g.a000oAh8TI1n49_Ux3Xu-EC6OlkxjHAXM6x5miSzqwNrlPyElpQLF9lbH0035uB1EzYg0VfPHgACgYKAUcSARMSFQHGX2Mi2g4ovCqvp54IpDQMSqD9BRoVAUF8yKp20lbQ6HdFnWbqIeyeKMOe0076; '
+               '__Secure-3PAPISID=4CNo5uWwFSZG9b0G/AXzPiQ2L6a2WeVeML; '
+               '__Secure-3PSIDCC=AKEyXzUgMP9ByGOSkkpHRFGBaXfHtRTS7_liqfcOXj1pr6ch5kPWlxANCGFhAQ6qc2fLWkK5; '
+               '__Secure-3PSIDTS=sidts-CjEBUFGoh1apV30CyRjKLmKqhixkwGFzC3kI1xjJsPqV06kkxxxuilXeUtnJlWUzZ3_GEAA; '
+               'APISID=DiI70Ovr8Yrz6M30/AxM5EK3i_UXqOsJnU; '
+               'HSID=A4TGwqBZkE8cI4gFU; '
+               'LOGIN_INFO=AFmmF2swRQIgPGo0mCrlgbAjl1o2BRkL9g19Jzeb_pDpe9qPR7Mx2iUCIQCa8uLKzWF4S0SfQRmEOWSLnvJ2ESqlAMDcJGhAWsYMjw:QUQ3MjNmeVczS1RVb19UQUhxZzBHbnhEWUVyQ204TGVySldjSHdveWJEdmhIeGVUOGdjLW1YSGJqOG5oNDJDOFN1VXBUVEpVQmxmX0FDaUtITjVkMGdEbXVTbDNXX2ZMbGNNb1R6; '
+               'PREF=f6=40000000&tz=America.Fortaleza; VISITOR_INFO1_LIVE=p-s6PkkBDJQ')
         }
-    }
-
+        
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         result = ydl.extract_info(f"ytsearch:{query}", download=True)
         if result:
@@ -203,62 +207,37 @@ def get_image_link():
 
     return jsonify({"image_url": img_url})
 
-@app.route('/play', methods=['GET'])
-def play_audio():
-    try:
-        # Obtém a URL do vídeo
-        url = request.args.get("url")
-        
-        if not url:
-            return jsonify({"error": "URL é obrigatória"}), 400
-        
-        yt = YouTube(url)
-        
-        # Seleciona apenas o áudio
-        stream = yt.streams.filter(only_audio=True).first()
-        caminho = stream.download(filename="temp_audio.mp3")  # Baixa temporariamente
 
-        # Reproduz o áudio diretamente como resposta
-        def gerar_audio():
-            with open(caminho, "rb") as audio:
-                data = audio.read(1024)
-                while data:
-                    yield data
-                    data = audio.read(1024)
-            os.remove(caminho)  # Remove o arquivo temporário depois de enviar
+@app.route('/api/yt/play', methods=['GET'])
+def get_mp3_info():
+    query = request.args.get('name')
+    if not query:
+        return jsonify({'error': 'Query não fornecida'}), 400
 
-        return Response(gerar_audio(), mimetype="audio/mpeg")
+    with yt_dlp.YoutubeDL({'quiet': True, 'format': 'bestaudio/best', 'noplaylist': True}) as ydl:
+        try:
+            result = ydl.extract_info(f"ytsearch:{query}", download=False)  # Set download=False for info
+            if result:
+                video_info = result['entries'][0]
+                title = video_info['title']
+                upload_date = video_info.get('upload_date', 'N/A')
+                views = video_info.get('view_count', 'N/A')
+                thumbnail = video_info.get('thumbnail', 'N/A')
+                channel = video_info.get('uploader', 'N/A')
+
+                download_link = request.host_url + 'api/yt/mp3?name=' + query
+                response = {
+                    'title': title,
+                    'download_link': download_link,
+                    'upload_date': upload_date,
+                    'views': views,
+                    'thumbnail': thumbnail,
+                    'channel': channel
+                }
+                return jsonify(response)
+        except Exception as e:
+            print(f"Error retrieving video info: {e}")
     
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/playvideo', methods=['GET'])
-def play_video():
-    try:
-        # Obtém a URL do vídeo
-        url = request.args.get("url")
-        
-        if not url:
-            return jsonify({"error": "URL é obrigatória"}), 400
-        
-        yt = YouTube(url)
-        
-        # Seleciona o vídeo com a maior resolução
-        stream = yt.streams.get_highest_resolution()
-        caminho = stream.download(filename="temp_video.mp4")  # Baixa temporariamente
-
-        # Reproduz o vídeo diretamente como resposta
-        def gerar_video():
-            with open(caminho, "rb") as video:
-                data = video.read(1024)
-                while data:
-                    yield data
-                    data = video.read(1024)
-            os.remove(caminho)  # Remove o arquivo temporário depois de enviar
-
-        return Response(gerar_video(), mimetype="video/mp4")
-    
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return jsonify({'error': 'Falha ao baixar ou encontrar o vídeo'}), 500
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
