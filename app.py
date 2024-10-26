@@ -7,8 +7,9 @@ import os
 import yt_dlp
 from pytubefix import YouTube
 app = Flask(__name__)
-# Função para buscar o vídeo no YouTube usando cookies
-# Função para buscar o vídeo no YouTube usando cookies
+from datetime import datetime
+import yt_dlp
+
 def search_video(query):
     # Gerar um nome base para o arquivo com data e hora
     base_filename = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -40,13 +41,18 @@ def search_video(query):
             )
         },
     }
+
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        result = ydl.extract_info(f"ytsearch:{query}", download=True)
-        if result:
-            video_info = result['entries'][0]
-            filename = f"{base_filename}.mp3"
-            return filename, video_info['title']
-        return None, None
+        try:
+            # Extrai e baixa o áudio
+            result = ydl.extract_info(f"ytsearch:{query}", download=True)
+            if result and 'entries' in result and len(result['entries']) > 0:
+                print(f"Download completo: {base_filename}.mp3")
+                return f"{base_filename}.mp3"  # Retorna o nome do arquivo baixado
+        except Exception as e:
+            print(f"Erro ao baixar áudio: {e}")
+
+    return None
 
 # Rota para baixar o vídeo do YouTube e enviar o arquivo MP3
 @app.route('/api/yt/mp3', methods=['GET'])
