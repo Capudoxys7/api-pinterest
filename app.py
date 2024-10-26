@@ -205,7 +205,6 @@ def get_image_link():
 
     return jsonify({"image_url": img_url})
 
-
 @app.route('/api/yt/play', methods=['GET'])
 def get_mp3_info():
     query = request.args.get('name')
@@ -214,15 +213,17 @@ def get_mp3_info():
 
     with yt_dlp.YoutubeDL({'quiet': True, 'format': 'bestaudio/best', 'noplaylist': True}) as ydl:
         try:
-            result = ydl.extract_info(f"ytsearch:{query}", download=False)  # Set download=False for info
+            # Extrai informações do vídeo sem fazer download
+            result = ydl.extract_info(f"ytsearch:{query}", download=False)
             if result:
-                video_info = result['entries'][0]
+                video_info = result['entries'][0]  # Pega o primeiro resultado
                 title = video_info['title']
                 upload_date = video_info.get('upload_date', 'N/A')
                 views = video_info.get('view_count', 'N/A')
                 thumbnail = video_info.get('thumbnail', 'N/A')
                 channel = video_info.get('uploader', 'N/A')
 
+                # Cria o link de download
                 download_link = request.host_url + 'api/yt/mp3?name=' + query
                 response = {
                     'title': title,
@@ -235,7 +236,9 @@ def get_mp3_info():
                 return jsonify(response)
         except Exception as e:
             print(f"Error retrieving video info: {e}")
-    
-    return jsonify({'error': 'Falha ao baixar ou encontrar o vídeo'}), 500
+            return jsonify({'error': 'Falha ao recuperar informações do vídeo'}), 500
+
+    return jsonify({'error': 'Nenhum resultado encontrado'}), 404
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
